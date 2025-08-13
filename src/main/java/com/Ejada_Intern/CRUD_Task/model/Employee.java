@@ -4,15 +4,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
 
 @Entity
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Name cannot be blank")
     private String name;
+    @Email(message = "Email should be valid")
     private String email;
+    @NotBlank(message = "Phone cannot be blank")
     private String phone;
+    @NotBlank(message = "Department cannot be blank")
     private String department;
 
     public Employee() {
