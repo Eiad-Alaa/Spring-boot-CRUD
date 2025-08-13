@@ -14,15 +14,25 @@ import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/api/v1")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
-    @PostMapping
+    @PostMapping("/employees")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Employee created successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeCreateResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Failed to create employee or validation error",
+            content = @Content(mediaType = "application/json"))
+    })
     public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
         // Convert EmployeeRequest to Employee
         Employee employee = new Employee();
@@ -40,13 +50,23 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/employees")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Employees retrieved successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeGetResponse.class)))
+    })
     public ResponseEntity<?> getAllEmployees() {
         Iterable<EmployeeGetResponse> employees = employeeService.getAllEmployees();
         return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/employees/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Employee retrieved successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeGetResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Employee not found",
+            content = @Content(mediaType = "application/json"))
+    })
     public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
         EmployeeGetResponse employee = employeeService.getEmployeeById(id);
         if (employee != null) {
@@ -58,7 +78,15 @@ public class EmployeeController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/employees/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Employee updated successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeUpdateResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Employee not found",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Validation error",
+            content = @Content(mediaType = "application/json"))
+    })
     public ResponseEntity<?> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeRequest employeeRequest) {
         Employee employee = new Employee();
         employee.setName(employeeRequest.getName());
@@ -75,7 +103,11 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/employees/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Employee deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Employee not found")
+    })
     public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
         boolean deleted = employeeService.deleteEmployeeById(id);
         if (deleted) {
