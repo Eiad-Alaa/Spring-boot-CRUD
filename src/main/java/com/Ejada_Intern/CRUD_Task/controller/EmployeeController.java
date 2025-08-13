@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +28,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping("/employees")
+    @Operation(summary = "Create a new employee", description = "Creates a new employee and returns the created employee DTO.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Employee created successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeCreateResponse.class))),
@@ -51,6 +53,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
+    @Operation(summary = "Get all employees", description = "Returns a list of all employees.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Employees retrieved successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeGetResponse.class)))
@@ -61,6 +64,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{id}")
+    @Operation(summary = "Get employee by ID", description = "Returns a single employee DTO by ID.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Employee retrieved successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeGetResponse.class))),
@@ -79,6 +83,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{id}")
+    @Operation(summary = "Update employee", description = "Updates an employee and returns the updated employee DTO.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Employee updated successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeUpdateResponse.class))),
@@ -104,6 +109,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employees/{id}")
+    @Operation(summary = "Delete employee", description = "Deletes an employee by ID.")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Employee deleted successfully"),
         @ApiResponse(responseCode = "404", description = "Employee not found")
