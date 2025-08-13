@@ -1,9 +1,6 @@
 package com.Ejada_Intern.CRUD_Task.model;
 
-import java.time.format.DateTimeFormatter;
-
 public class EmployeeMapper {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     public static EmployeeCreateResponse toCreateResponse(Employee employee) {
         return new EmployeeCreateResponse(
@@ -12,7 +9,7 @@ public class EmployeeMapper {
             employee.getEmail(),
             employee.getPhone(),
             employee.getDepartment(),
-            employee.getCreatedAt() != null ? employee.getCreatedAt().format(formatter) : null
+            employee.getCreatedAt()
         );
     }
 
@@ -33,8 +30,7 @@ public class EmployeeMapper {
             employee.getEmail(),
             employee.getPhone(),
             employee.getDepartment(),
-            employee.getUpdatedAt() != null ? employee.getUpdatedAt().format(formatter) : null
+            employee.getUpdatedAt()
         );
     }
 }
-

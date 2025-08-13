@@ -1,14 +1,16 @@
 package com.Ejada_Intern.CRUD_Task.model;
 
+import java.time.LocalDateTime;
+
 public class EmployeeCreateResponse {
     private Long id;
     private String name;
     private String email;
     private String phone;
     private String department;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
-    public EmployeeCreateResponse(Long id, String name, String email, String phone, String department, String createdAt) {
+    public EmployeeCreateResponse(Long id, String name, String email, String phone, String department, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -22,6 +24,5 @@ public class EmployeeCreateResponse {
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
     public String getDepartment() { return department; }
-    public String getCreatedAt() { return createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
-
