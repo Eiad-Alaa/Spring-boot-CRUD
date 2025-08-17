@@ -15,34 +15,34 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> handleConstraintViolation(ConstraintViolationException ex) {
         String errors = ex.getConstraintViolations()
-                .stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .collect(Collectors.joining(", "));
-        response.put("message", "Validation failed");
-        response.put("errors", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                          .stream()
+                          .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                          .collect(Collectors.joining(", "));
+        return buildResponse("Validation failed", errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, Object> response = new HashMap<>();
-        String errors = ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(e -> e.getField() + ": " + e.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-        response.put("message", "Validation failed");
-        response.put("errors", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String errors = ex.getBindingResult()
+                          .getFieldErrors()
+                          .stream()
+                          .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                          .collect(Collectors.joining(", "));
+        return buildResponse("Validation failed", errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        return buildResponse("An unexpected error occurred", ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Helper method to build consistent error responses
+    private ResponseEntity<Map<String, Object>> buildResponse(String message, String details, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "An error occurred");
-        response.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        response.put("message", message);
+        response.put("details", details);
+        return ResponseEntity.status(status).body(response);
     }
 }
